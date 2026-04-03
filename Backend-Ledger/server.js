@@ -7,6 +7,7 @@ connectToDB().then(()=>{
     console.log("Connect to DB")
 }).catch((err)=>{
     console.log("Error in connecting DB",err);
+    process.exit(1)
 })
 
 app.listen(process.env.PORT || 3000 ,()=>{
