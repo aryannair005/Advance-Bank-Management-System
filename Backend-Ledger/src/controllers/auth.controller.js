@@ -31,6 +31,7 @@ const registerUserController = async(req,res) => {
         },
         token
     })
+    await emailService.sendRegistrationEmail(user.email,user.name)
 }
 
 const loginUserController = async (req,res) => {
@@ -53,7 +54,7 @@ const loginUserController = async (req,res) => {
 
     const token = jwt.sign({userId:user._id},process.env.JWT_SECRET)
 
-    return res.status(200).json({
+    res.status(200).json({
         message:"User logged In successfully",
         user:{
             _id:user._id,
@@ -62,6 +63,7 @@ const loginUserController = async (req,res) => {
         },
         token
     })
+    await emailService.sendLoginNotificationEmail(user.email,user.name)
 }
 
 module.exports = {
