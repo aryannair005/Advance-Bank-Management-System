@@ -55,15 +55,15 @@ async function sendLoginNotificationEmail(userEmail,name){
 
 async function sendTransactionEmail(userEmail,name,amount,toAccount){
     const subject='Transaction Alert'
-    const text=`Hi ${name},\n\nA transaction of $${amount} has been made to account ${toAccount}. If this was you, you can safely ignore this email. If you did not authorize this transaction, please contact support immediately.\n\nBest regards,\nThe Backend Ledger Team`
-    const html=`<p>Hi ${name},</p><p>A transaction of $${amount} has been made to account ${toAccount}. If this was you, you can safely ignore this email. If you did not authorize this transaction, please contact support immediately.</p><p>Best regards,<br>The Backend Ledger Team</p>`
+    const text=`Hi ${name},\n\nA transaction of ₹${amount} has been made to account ${toAccount}. If this was you, you can safely ignore this email. If you did not authorize this transaction, please contact support immediately.\n\nBest regards,\nThe Backend Ledger Team`
+    const html=`<p>Hi ${name},</p><p>A transaction of ₹${amount} has been made to account ${toAccount}. If this was you, you can safely ignore this email. If you did not authorize this transaction, please contact support immediately.</p><p>Best regards,<br>The Backend Ledger Team</p>`
     await sendEmail(userEmail,subject,text,html)
 }
 
 async function sendTransactionFailureEmail(userEmail,name,amount,toAccount){
   const subject='Transaction failed'
-  const text = `Hello ${name},\n\nWe regret to inform you that your transaction of $${amount} to account ${toAccount} is failed.`
-  const html=`<p>Hi ${name},</p><p>A transaction of $${amount}  to account ${toAccount} is failed. If this was you, you can safely ignore this email. If you did not authorize this transaction, please contact support immediately.</p><p>Best regards,<br>The Backend Ledger Team</p>`
+  const text = `Hello ${name},\n\nWe regret to inform you that your transaction of ₹${amount} to account ${toAccount} is failed.`
+  const html=`<p>Hi ${name},</p><p>A transaction of ₹${amount}  to account ${toAccount} is failed. If this was you, you can safely ignore this email. If you did not authorize this transaction, please contact support immediately.</p><p>Best regards,<br>The Backend Ledger Team</p>`
   await sendEmail(userEmail,subject,text,html)
 }
 
