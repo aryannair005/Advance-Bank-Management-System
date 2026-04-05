@@ -114,16 +114,23 @@ const createTransactionController = async (req,res) => {
 
         await session.commitTransaction()
         session.endSession()
+
+        await transactionModel.findByIdAndUpdate(
+            transaction._id,
+            { status: "COMPLETED" }
+        )
     }catch(err){
         return res.status(500).json({
             message:"Transaction is Pending due to some issue. Please retry",
         })
     }
     await emailService.sendTransactionEmail(req .user.email,req.user.name,amount,toAccount)
+    
+    const updatedTransaction = await transactionModel.findById(transaction._id)
 
     return res.status(201).json({
         message:"Transaction completed successfully.",
-        transaction:transaction
+        transaction: updatedTransaction
     })
 }
 
