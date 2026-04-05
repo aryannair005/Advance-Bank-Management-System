@@ -126,6 +126,72 @@ const createTransactionController = async (req,res) => {
 }
 
 
+const createInitialFundsController = async(req,res) => {
+    const {toAccount,amount,idempotencyKey} = req.body
+
+    if(!toAccount || !amount || !idempotencyKey){
+        return res.status(400).json({
+            message:"Missing required fields: toAccount, amount, idempotencyKey"
+        })
+    }
+
+    const toUserAccount = await accountModel.findOne({_id:toAccount})
+
+    if(!toUserAccount){
+        return res.status(404).json({
+            message:"Account not found."
+        })
+    }
+
+    const fromUserAccount = await accountModel.findOne({user:req.user._id})
+
+    if(!fromUserAccount){
+        return res.status(404).json({
+            message:"System user account not found."
+        })
+    }
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
+    const transaction = new transactionModel({
+        fromAccount:fromUserAccount._id,
+        toAccount,
+        amount,
+        idempotencyKey,
+        status:"PENDING"
+    })
+
+    const debitLedgerEntry = await ledgerModel.create([{
+        account:fromUserAccount._id,
+        transaction:transaction._id,
+        type:"DEBIT",
+        amount:amount,
+    }],{session})
+
+    const creditLedgerEntry = await ledgerModel.create([{
+        account:toAccount,
+        transaction:transaction._id,
+        type:"CREDIT",
+        amount:amount,
+    }],{session})
+
+    transaction.status = "COMPLETED"
+    await transaction.save({session})
+    await session.commitTransaction()
+    session.endSession()
+
+
+    return res.status(201).json({
+        message:"Initial funds added successfully.",
+        transaction:transaction
+    })
+}
+
 module.exports = {
     createTransactionController,
+    createInitialFundsController 
 }
+
+// hackerchutiyehotehe_db_user
+// Aryanna3557u
