@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model.js")
 const jwt = require("jsonwebtoken")
 const emailService = require("../services/email.service.js")
+const blacklistModel = require("../models/blackList.model.js")
 
 const registerUserController = async(req,res) => {
     const { email, name , password} = req.body
@@ -67,7 +68,33 @@ const loginUserController = async (req,res) => {
     await emailService.sendLoginNotificationEmail(user.email,user.name)
 }
 
+const logoutUserController = async (req,res) => {
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1]
+    const alreadyBlacklisted = await blacklistModel.findOne({token})
+    
+    if(alreadyBlacklisted){
+        return res.status(400).json({
+            message:"Token is already blacklisted"
+        })
+    }
+
+    if(!token){
+        return res.status(400).json({
+            message:"No token provided"
+        })
+    }
+
+    res.clearCookie("token")
+
+    await blacklistModel.create({token})
+
+    res.status(200).json({
+        message:"User logged out successfully"
+    })
+}
+
 module.exports = {
     registerUserController,
-    loginUserController
+    loginUserController,
+    logoutUserController
 }
