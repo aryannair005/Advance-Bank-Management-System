@@ -51,13 +51,13 @@ const createTransactionController = async (req,res) => {
             })
         }
         if(existingTransaction.status === "FAILED"){
-            return res.status(200).json({
+            return res.status(500).json({
                 message:"Previous transaction attempt failed. You can retry.",
                 transaction:existingTransaction
             })
         }
         if(existingTransaction.status === "REVERSED"){
-            return res.status(200).json({
+            return res.status(500).json({
                 message:"Previous transaction was reversed. You can retry.",
                 transaction:existingTransaction
             })
@@ -80,47 +80,49 @@ const createTransactionController = async (req,res) => {
         })
     }
 
-    // 5- Create transaction(PENDING)
-    const session = await mongoose.startSession()
-    session.startTransaction()
+    let transaction;
+    try{
+        const session = await mongoose.startSession()
+        session.startTransaction()
 
-    const transaction = await transactionModel.create({
-        fromAccount,
-        toAccount,
-        amount,
-        idempotencyKey,
-        status:"PENDING"
-    },{session})
+        transaction = (await transactionModel.create([{
+            fromAccount,
+            toAccount,
+            amount,
+            idempotencyKey,
+            status:"PENDING"
+        }],{session}))[0]
 
-    // 6- Create DEBIT ledger entry for sender
-    const debitLedgerEntry = await ledgerModel.create({
-        account:fromAccount,
-        transaction:transaction._id,
-        type:"DEBIT",
-        amount:amount,
-    },{session})  
+        const debitLedgerEntry = await ledgerModel.create([{
+            account:fromAccount,
+            transaction:transaction._id,
+            type:"DEBIT",
+            amount:amount,
+        }],{session})
 
-    // 7- create CREDIT ledger entry for receiver
-    const creditLedgerEntry = await ledgerModel.create({
-        account:toAccount,
-        transaction:transaction._id,
-        type:"CREDIT",
-        amount:amount,
-    },{session})
+        await (()=>{
+            return new Promise((resolve)=> setTimeout(resolve,10*1000))
+        })()
 
-    // 8- Mark transaction as Completed
-    transaction.status = "COMPLETED"
-    await transaction.save({session})
+        const creditLedgerEntry = await ledgerModel.create([{
+            account:toAccount,
+            transaction:transaction._id,
+            type:"CREDIT",
+            amount:amount,
+        }],{session})
 
-    // 9- Commit MongoDB session
-    await session.commitTransaction()
-    session.endSession()
 
-    // 10- Send email notification
-    await emailService.sendTransactionEmail(req.user.email,req.user.name,amount,toAccount)
+        await session.commitTransaction()
+        session.endSession()
+    }catch(err){
+        return res.status(500).json({
+            message:"Transaction is Pending due to some issue. Please retry",
+        })
+    }
+    await emailService.sendTransactionEmail(req .user.email,req.user.name,amount,toAccount)
 
     return res.status(201).json({
-        message:"Transaction successful.",
+        message:"Transaction completed successfully.",
         transaction:transaction
     })
 }
