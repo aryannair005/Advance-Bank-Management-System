@@ -9,6 +9,12 @@ const transactionRouter = require("./routes/transaction.routes.js")
 app.use(express.json())
 app.use(cookieParser())
 
+app.get("/",(req,res)=>{
+    res.status(200).json({
+        message:"Welcome to Bank Ledger API"
+    })
+})
+
 app.use("/api/auth",authRouter)
 app.use("/api/account",accountRouter)
 app.use("/api/transaction",transactionRouter)
