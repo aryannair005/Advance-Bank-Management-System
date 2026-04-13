@@ -1,15 +1,34 @@
-require("dotenv").config()
+/**
+ * @fileoverview Application entry point.
+ * Loads environment variables, connects to the database,
+ * and starts the Express server.
+ */
 
-const app = require("./src/app.js")
-const connectToDB = require("./src/config/database.js")
+require("dotenv").config();
 
-connectToDB().then(()=>{
-    console.log("Connect to DB")
-}).catch((err)=>{
-    console.log("Error in connecting DB",err);
-    process.exit(1)
-})
+const app = require("./src/app.js");
+const connectToDB = require("./src/config/database.js");
 
-app.listen(process.env.PORT || 3000 ,()=>{
-    console.log(`Server is listening to PORT : ${process.env.PORT}`)
-})
+/**
+ * Initialize database connection
+ * Exits the process if connection fails
+ */
+connectToDB()
+    .then(() => {
+        console.log("Connected to DB");
+    })
+    .catch((err) => {
+        console.error("Error in connecting DB:", err);
+        process.exit(1);
+    });
+
+/**
+ * Start Express server
+ * Uses PORT from environment variables or defaults to 3000
+ */
+const PORT = process.env.PORT || 3000;
+
+
+app.listen(PORT, () => {
+    console.log(`Server is listening on PORT: ${PORT}`);
+});
