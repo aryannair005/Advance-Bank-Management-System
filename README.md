@@ -1,10 +1,10 @@
-# 🏦 Backend Ledger API
+# Backend Ledger API
 
 A secure and scalable backend system for managing financial accounts, transactions, and ledgers.
 
 ---
 
-## 📌 Overview
+## Overview
 
 The **Backend Ledger API** is a Node.js REST API built for core banking-style workflows such as:
 
@@ -17,20 +17,20 @@ The project follows a modular **MVC architecture** for maintainability and scala
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔐 JWT-based authentication
-- 👤 User registration and login with hashed passwords
-- 💳 Multi-account management
-- 💸 Deposit and withdrawal transactions
-- 📊 Ledger tracking for fund movements
-- 📧 Email notifications via Nodemailer
-- 🚫 Token blacklisting for secure logout
-- 🧩 Clean modular architecture (controllers, models, routes, services)
+- JWT-based authentication
+- User registration and login with hashed passwords
+- Multi-account management
+- Deposit and withdrawal transactions
+- Ledger tracking for fund movements
+- Email notifications via Nodemailer
+- Token blacklisting for secure logout
+- Clean modular architecture (controllers, models, routes, services)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Runtime:** Node.js
 - **Framework:** Express.js
@@ -42,7 +42,7 @@ The project follows a modular **MVC architecture** for maintainability and scala
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 - `server.js` – application entry point  
 - `src/app.js` – Express app setup  
@@ -67,7 +67,7 @@ The project follows a modular **MVC architecture** for maintainability and scala
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 1. Clone the repository:
    - `git clone https://github.com/aryannair005/Advance-Bank-Management-System.git`
@@ -91,7 +91,7 @@ Server default: `http://localhost:3000`
 
 ---
 
-## 📡 API Endpoints (Typical)
+## API Endpoints (Typical)
 
 ### Authentication
 - `POST /auth/register` — Register a user
@@ -108,7 +108,7 @@ Server default: `http://localhost:3000`
 
 ---
 
-## 🧪 Example Request
+## Example Request
 
 `POST /transaction/deposit`
 
@@ -118,7 +118,7 @@ Request body:
 
 ---
 
-## 🔒 Security
+## Security
 
 - Password hashing using `bcryptjs`
 - JWT-protected private routes
@@ -127,7 +127,7 @@ Request body:
 
 ---
 
-## 📈 Future Improvements
+## Future Improvements
 
 - Swagger/OpenAPI documentation
 - Role-based access control (RBAC)
@@ -137,12 +137,12 @@ Request body:
 
 ---
 
-## 👤 Author
+## Author
 
 **Aryan Nair**
 
 ---
 
-## ⭐ Support
+## Support
 
 If this project helped you, consider giving it a **star** on GitHub.
